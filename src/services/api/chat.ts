@@ -1,20 +1,30 @@
 import { GoogleGenAI } from "@google/genai";
 
-export default async function handler(req: any, res: any) {
+export const config = {
+  runtime: "nodejs",
+};
+
+export default async function handler(req: Request) {
   try {
-    const { messages } = req.body;
+    const body = await req.json();
 
     const ai = new GoogleGenAI({
-      apiKey: process.env.VITE_GEMINI_API_KEY,
+      apiKey: process.env.VITE_GEMINI_API_KEY!,
     });
 
-    const response = await ai.models.generateContent({
+    const result = await ai.models.generateContent({
       model: "gemini-1.5-flash",
-      contents: messages,
+      contents: body.messages,
     });
 
-    res.status(200).json({ text: response.text });
-  } catch (error) {
-    res.status(500).json({ error: "API failed" });
+    return new Response(
+      JSON.stringify({ text: result.text }),
+      { status: 200 }
+    );
+  } catch (e) {
+    return new Response(
+      JSON.stringify({ error: "Gemini failed" }),
+      { status: 500 }
+    );
   }
 }
