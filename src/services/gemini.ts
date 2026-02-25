@@ -1,4 +1,4 @@
-export async function streamChatResponse(messages: any) {
+export async function* streamChatResponse(messages:any[]) {
   const res = await fetch("/api/chat", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -6,10 +6,5 @@ export async function streamChatResponse(messages: any) {
   });
 
   const data = await res.json();
-
-  async function* gen() {
-    yield data.text;
-  }
-
-  return gen();
+  yield data.text;
 }
