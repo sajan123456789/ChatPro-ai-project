@@ -88,28 +88,6 @@ export default function App() {
 
     const modelMessageId = (Date.now() + 1).toString();
 
-    if (persona === 'image_creator') {
-      setMessages(prev => [...prev, { id: modelMessageId, role: 'model', text: 'Generating image...' }]);
-      try {
-        const base64Image = await generateImage(text);
-        setMessages(prev =>
-          prev.map(msg =>
-            msg.id === modelMessageId ? { ...msg, text: '', generatedImage: base64Image } : msg
-          )
-        );
-      } catch (error) {
-        console.error('Error generating image:', error);
-        setMessages(prev =>
-          prev.map(msg =>
-            msg.id === modelMessageId ? { ...msg, text: 'Sorry, I failed to generate the image. Please try again with a different prompt.' } : msg
-          )
-        );
-      } finally {
-        setIsLoading(false);
-      }
-      return;
-    }
-
     setMessages(prev => [...prev, { id: modelMessageId, role: 'model', text: '' }]);
 
     try {
