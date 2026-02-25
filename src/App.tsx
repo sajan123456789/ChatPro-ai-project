@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Sidebar, type ChatSession } from './components/Sidebar';
 import { ChatMessage } from './components/ChatMessage';
 import { ChatInput } from './components/ChatInput';
-import { streamChatResponse } from './services/gemini';
 import { PanelLeftOpen, Sparkles, Globe2, ShieldCheck, Zap, Code2, GraduationCap, Scale, Calculator, Download, Trash2, Image as ImageIcon } from 'lucide-react';
 
 export default function App() {
