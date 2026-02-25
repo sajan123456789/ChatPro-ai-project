@@ -1,7 +1,14 @@
 import { GoogleGenAI } from "@google/genai";
 
-const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-const ai = new GoogleGenAI({ apiKey });
+const apiKey = import.meta.env.VITE_GEMINI_API_KEY as string;
+
+if (!apiKey) {
+  throw new Error("VITE_GEMINI_API_KEY missing in environment");
+}
+
+const ai = new GoogleGenAI({
+  apiKey
+});
 
 export type Role = 'user' | 'model';
 
