@@ -90,7 +90,6 @@ export default function App() {
     setMessages(prev => [...prev, { id: modelMessageId, role: 'model', text: '' }]);
 
     try {
-      const stream = streamChatResponse(newMessages, persona, useWebSearch);
       for await (const chunk of stream) {
         setMessages(prev =>
           prev.map(msg =>
