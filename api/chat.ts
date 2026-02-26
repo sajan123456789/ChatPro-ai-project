@@ -17,9 +17,11 @@ export default async function handler(req: any, res: any) {
       contents: messages,
     });
 
-    res.status(200).json({
-      text: response.text || "No response"
-    });
+    const text =
+      response.candidates?.[0]?.content?.parts?.[0]?.text ||
+      "No response";
+
+    res.status(200).json({ text });
 
   } catch (error) {
     console.error(error);
