@@ -42,15 +42,13 @@ export default function App() {
     setMessages(prev => [...prev, { id: modelMessageId, role: 'model', text: '' }]);
 
     try {
-      const res = await fetch('/api/chat', {
+      const res = await fetch('/.netlify/functions/chat', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({
-    message: text,
-    persona
+    message: text
   })
 });
-
       const data = await res.json();
 
       setMessages(prev =>
