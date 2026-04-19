@@ -1,10 +1,20 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-export default async function handler(req, res) {
-  try {
-    const { message } = req.body;
+export default async function handler(req: any, res: any) {
+  // Only allow POST
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method not allowed" });
+  }
 
-    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+  try {
+    const body = typeof req.body === "string" ? JSON.parse(req.body) : req.body;
+    const message = body.message;
+
+    if (!message) {
+      return res.status(400).json({ error: "No message provided" });
+    }
+
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
     const model = genAI.getGenerativeModel({
       model: "gemini-1.5-flash",
@@ -12,12 +22,15 @@ export default async function handler(req, res) {
 
     const result = await model.generateContent(message);
     const response = await result.response;
-    const text = response.text();
 
-    res.status(200).json({ reply: text });
+    return res.status(200).json({
+      reply: response.text(),
+    });
 
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "AI not working" });
+    console.error("API ERROR:", error);
+    return res.status(500).json({
+      error: "AI not working",
+    });
   }
 }
