@@ -1,37 +1,23 @@
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
-export const config = {
-  runtime: "nodejs"
-};
-
-export default async function handler(req: any, res: any) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" });
-  }
-
+export default async function handler(req, res) {
   try {
-    const { messages } = req.body;
+    const { message } = req.body;
 
-    const ai = new GoogleGenAI({
-      apiKey: process.env.VITE_GEMINI_API_KEY!,
-    });
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-    const response = await ai.models.generateContent({
+    const model = genAI.getGenerativeModel({
       model: "gemini-1.5-flash",
-      contents: messages,
     });
 
-    // ✅ Proper Gemini text extraction
-    const text = response.candidates?.[0]?.content?.parts
-      ?.map((part: any) => part.text || "")
-      .join("") || "No response";
+    const result = await model.generateContent(message);
+    const response = await result.response;
+    const text = response.text();
 
-    res.status(200).json({ text });
+    res.status(200).json({ reply: text });
 
-  } catch (error: any) {
-    console.error("FULL ERROR:", error);
-    res.status(500).json({
-      error: error?.message || "API failed"
-    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "AI not working" });
   }
 }
